@@ -318,7 +318,6 @@
             <ul>
                 <li><a href="{{ route('gudang.dashboard') }}" class="{{ request()->routeIs('gudang.dashboard') ? 'active' : '' }}">Dashboard</a></li>
                 <li><a href="{{ route('gudang.bahan-baku.index') }}" class="{{ request()->routeIs('gudang.bahan-baku.*') ? 'active' : '' }}">Bahan Baku</a></li>
-                <li><a href="{{ route('gudang.permintaan.index') }}" class="{{ request()->routeIs('gudang.permintaan.*') ? 'active' : '' }}">Permintaan</a></li>
             </ul>
         </div>
     </nav>
@@ -326,9 +325,7 @@
     <nav class="nav">
         <div class="container">
             <ul>
-                <li><a href="{{ route('dapur.dashboard') }}" class="{{ request()->routeIs('dapur.dashboard') ? 'active' : '' }}">Dashboard</a></li>
-                <li><a href="{{ route('dapur.bahan-baku.index') }}" class="{{ request()->routeIs('dapur.bahan-baku.*') ? 'active' : '' }}">Lihat Bahan Baku</a></li>
-                <li><a href="{{ route('dapur.permintaan.index') }}" class="{{ request()->routeIs('dapur.permintaan.*') ? 'active' : '' }}">Permintaan Saya</a></li>
+                <p>Menu Dapur</p>
             </ul>
         </div>
     </nav>
