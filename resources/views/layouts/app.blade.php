@@ -207,6 +207,22 @@
             font-size: 12px;
         }
 
+        /* Action column styling */
+        .table td:last-child {
+            width: 140px;
+            min-width: 140px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .action-buttons .btn {
+            white-space: nowrap;
+        }
+
         /* Alerts */
         .alert {
             padding: 15px;
@@ -230,6 +246,26 @@
             background-color: #cce7ff;
             color: #004085;
             border: 1px solid #b8daff;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 8px;
         }
 
         /* Status badges */

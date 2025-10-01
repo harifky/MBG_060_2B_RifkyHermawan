@@ -37,17 +37,28 @@
                 <td>{{ date('d/m/Y', strtotime($bahan->tanggal_kadaluarsa)) }}</td>
                 <td>
                     @if($bahan->status == 'tersedia')
-                        <span class="badge badge-success">Tersedia</span>
+                    <span class="badge badge-success">Tersedia</span>
                     @elseif($bahan->status == 'segera_kadaluarsa')
-                        <span class="badge badge-warning">Segera Kadaluarsa</span>
+                    <span class="badge badge-warning">Segera Kadaluarsa</span>
                     @elseif($bahan->status == 'kadaluarsa')
-                        <span class="badge badge-danger">Kadaluarsa</span>
+                    <span class="badge badge-danger">Kadaluarsa</span>
                     @else
-                        <span class="badge badge-secondary">Habis</span>
+                    <span class="badge badge-secondary">Habis</span>
                     @endif
                 </td>
                 <td>
-                    <a href="{{ route('gudang.bahan-baku.edit', $bahan->id) }}" class="btn btn-primary btn-sm">Update Stok</a>
+                    <div class="action-buttons">
+                        <a href="{{ route('gudang.bahan-baku.edit', $bahan->id) }}" class="btn btn-primary btn-sm">Update</a>
+                        @if($bahan->status == 'kadaluarsa')
+                        <form method="POST" action="{{ route('gudang.bahan-baku.delete', $bahan->id) }}" style="display: inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus bahan baku kadaluarsa ini?')">
+                                Hapus
+                            </button>
+                        </form>
+                        @endif
+                    </div>
                 </td>
             </tr>
             @endforeach

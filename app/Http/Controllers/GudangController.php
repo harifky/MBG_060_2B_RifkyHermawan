@@ -11,16 +11,16 @@ class GudangController extends Controller
     {
         // Total bahan baku
         $totalBahan = DB::select("SELECT COUNT(*) as total FROM bahan_baku")[0]->total;
-        
+
         // Bahan tersedia
         $bahanTersedia = DB::select("SELECT COUNT(*) as total FROM bahan_baku WHERE status = 'tersedia'")[0]->total;
-        
+
         // Bahan hampir habis (stok <= 10)
         $bahanHampirHabis = DB::select("SELECT COUNT(*) as total FROM bahan_baku WHERE jumlah <= 10")[0]->total;
-        
+
         // Bahan kadaluarsa
         $bahanKadaluarsa = DB::select("SELECT COUNT(*) as total FROM bahan_baku WHERE status = 'kadaluarsa'")[0]->total;
-        
+
         // Permintaan menunggu
         $permintaanMenunggu = DB::select("SELECT COUNT(*) as total FROM permintaan WHERE status = 'menunggu'")[0]->total;
 
@@ -43,7 +43,9 @@ class GudangController extends Controller
         ");
 
         return view('gudang.dashboard', compact(
-            'totalBahan', 'bahanTersedia', 'bahanHampirHabis', 
+            'totalBahan',
+            'bahanTersedia',
+            'bahanHampirHabis',
             'bahanKadaluarsa'
         ));
     }
@@ -55,7 +57,7 @@ class GudangController extends Controller
             SELECT * FROM bahan_baku 
             ORDER BY created_at DESC
         ");
-        
+
         return view('gudang.bahan-baku.index', compact('bahanBaku'));
     }
 
@@ -94,7 +96,7 @@ class GudangController extends Controller
         ]);
 
         return redirect()->route('gudang.bahan-baku.index')
-                        ->with('success', 'Bahan baku "' . $request->nama . '" berhasil ditambahkan dengan status: ' . ucfirst(str_replace('_', ' ', $status)));
+            ->with('success', 'Bahan baku "' . $request->nama . '" berhasil ditambahkan dengan status: ' . ucfirst(str_replace('_', ' ', $status)));
     }
 
     // Helper method untuk menghitung status sesuai dokumen
@@ -103,22 +105,22 @@ class GudangController extends Controller
         $tanggalKadaluarsa = date('Y-m-d', strtotime($tanggalKadaluarsa));
         $hariIni = date('Y-m-d');
         $tigaHariLagi = date('Y-m-d', strtotime('+3 days'));
-        
+
         // Habis: jika jumlah = 0
         if ($jumlah <= 0) {
             return 'habis';
         }
-        
+
         // Kadaluarsa: jika hari_ini >= tanggal_kadaluarsa
         if ($hariIni >= $tanggalKadaluarsa) {
             return 'kadaluarsa';
         }
-        
+
         // Segera Kadaluarsa: jika tanggal_kadaluarsa <= 3 hari dari sekarang dan stok > 0
         if ($tanggalKadaluarsa <= $tigaHariLagi && $jumlah > 0) {
             return 'segera_kadaluarsa';
         }
-        
+
         // Tersedia: jika stok > 0 dan tidak masuk kondisi di atas
         return 'tersedia';
     }
@@ -127,12 +129,12 @@ class GudangController extends Controller
     public function editBahan($id)
     {
         $bahanBaku = DB::select("SELECT * FROM bahan_baku WHERE id = ?", [$id]);
-        
+
         if (empty($bahanBaku)) {
             return redirect()->route('gudang.bahan-baku.index')
-                            ->with('error', 'Bahan baku tidak ditemukan.');
+                ->with('error', 'Bahan baku tidak ditemukan.');
         }
-        
+
         $bahanBaku = $bahanBaku[0];
         return view('gudang.bahan-baku.edit', compact('bahanBaku'));
     }
@@ -146,10 +148,10 @@ class GudangController extends Controller
 
         // Ambil data bahan baku untuk mendapatkan tanggal kadaluarsa
         $bahanBaku = DB::select("SELECT * FROM bahan_baku WHERE id = ?", [$id]);
-        
+
         if (empty($bahanBaku)) {
             return redirect()->route('gudang.bahan-baku.index')
-                            ->with('error', 'Bahan baku tidak ditemukan.');
+                ->with('error', 'Bahan baku tidak ditemukan.');
         }
 
         $bahanBaku = $bahanBaku[0];
@@ -169,6 +171,26 @@ class GudangController extends Controller
         ]);
 
         return redirect()->route('gudang.bahan-baku.index')
-                        ->with('success', 'Stok bahan baku "' . $bahanBaku->nama . '" berhasil diupdate menjadi ' . $request->jumlah . ' ' . $bahanBaku->satuan);
+            ->with('success', 'Stok bahan baku "' . $bahanBaku->nama . '" berhasil diupdate menjadi ' . $request->jumlah . ' ' . $bahanBaku->satuan);
+    }
+
+    public function deleteBahan($id)
+    {
+        // Ambil data bahan baku berdasarkan ID
+        $bahan = DB::selectOne("SELECT * FROM bahan_baku WHERE id = ?", [$id]);
+
+        if (!$bahan) {
+            return redirect()->route('gudang.bahan-baku.index')->with('error', 'Bahan baku tidak ditemukan');
+        }
+
+        // Cek apakah bahan baku berstatus kadaluarsa
+        if ($bahan->status !== 'kadaluarsa') {
+            return redirect()->route('gudang.bahan-baku.index')->with('error', 'Hanya bahan baku yang kadaluarsa yang dapat dihapus');
+        }
+
+        // Hapus bahan baku
+        DB::delete("DELETE FROM bahan_baku WHERE id = ?", [$id]);
+
+        return redirect()->route('gudang.bahan-baku.index')->with('success', 'Bahan baku kadaluarsa berhasil dihapus');
     }
 }

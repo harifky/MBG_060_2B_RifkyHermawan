@@ -33,6 +33,7 @@ Route::middleware(['auth', 'role:gudang'])->prefix('gudang')->name('gudang.')->g
         Route::post('/store', [GudangController::class, 'storeBahan'])->name('store');
         Route::get('/{id}/edit', [GudangController::class, 'editBahan'])->name('edit');
         Route::put('/{id}', [GudangController::class, 'updateBahan'])->name('update');
+        Route::delete('/{id}', [GudangController::class, 'deleteBahan'])->name('delete');
     });
 
     Route::prefix('permintaan')->name('permintaan.')->group(function () {
