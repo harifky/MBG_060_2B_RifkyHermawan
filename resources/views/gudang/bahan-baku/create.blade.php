@@ -107,7 +107,6 @@
             </div>
         </div>
 
-        <!-- Info Status -->
         <div class="alert alert-info">
             <h4>Informasi Status Bahan:</h4>
             <ul style="margin: 10px 0 5px 20px; padding: 0; line-height: 1.8;">

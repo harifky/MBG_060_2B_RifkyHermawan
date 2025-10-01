@@ -47,7 +47,7 @@
                     @endif
                 </td>
                 <td>
-                    <p>Aksi</p>
+                    <a href="{{ route('gudang.bahan-baku.edit', $bahan->id) }}" class="btn btn-primary btn-sm">Update Stok</a>
                 </td>
             </tr>
             @endforeach

@@ -122,4 +122,53 @@ class GudangController extends Controller
         // Tersedia: jika stok > 0 dan tidak masuk kondisi di atas
         return 'tersedia';
     }
+
+    // Update Stok Bahan Baku
+    public function editBahan($id)
+    {
+        $bahanBaku = DB::select("SELECT * FROM bahan_baku WHERE id = ?", [$id]);
+        
+        if (empty($bahanBaku)) {
+            return redirect()->route('gudang.bahan-baku.index')
+                            ->with('error', 'Bahan baku tidak ditemukan.');
+        }
+        
+        $bahanBaku = $bahanBaku[0];
+        return view('gudang.bahan-baku.edit', compact('bahanBaku'));
+    }
+
+    public function updateBahan(Request $request, $id)
+    {
+        // Validasi input - hanya jumlah stok yang bisa diubah
+        $request->validate([
+            'jumlah' => 'required|integer|min:0', // Sistem menolak jika < 0
+        ]);
+
+        // Ambil data bahan baku untuk mendapatkan tanggal kadaluarsa
+        $bahanBaku = DB::select("SELECT * FROM bahan_baku WHERE id = ?", [$id]);
+        
+        if (empty($bahanBaku)) {
+            return redirect()->route('gudang.bahan-baku.index')
+                            ->with('error', 'Bahan baku tidak ditemukan.');
+        }
+
+        $bahanBaku = $bahanBaku[0];
+
+        // Hitung status baru berdasarkan stok yang diupdate
+        $statusBaru = $this->calculateStatus($request->jumlah, $bahanBaku->tanggal_kadaluarsa);
+
+        // Update jumlah stok dan status
+        DB::update("
+            UPDATE bahan_baku 
+            SET jumlah = ?, status = ?
+            WHERE id = ?
+        ", [
+            $request->jumlah,
+            $statusBaru,
+            $id
+        ]);
+
+        return redirect()->route('gudang.bahan-baku.index')
+                        ->with('success', 'Stok bahan baku "' . $bahanBaku->nama . '" berhasil diupdate menjadi ' . $request->jumlah . ' ' . $bahanBaku->satuan);
+    }
 }

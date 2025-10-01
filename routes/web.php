@@ -29,6 +29,10 @@ Route::middleware(['auth', 'role:gudang'])->prefix('gudang')->name('gudang.')->g
 
     Route::prefix('bahan-baku')->name('bahan-baku.')->group(function () {
         Route::get('/', [GudangController::class, 'bahanBaku'])->name('index');
+        Route::get('/create', [GudangController::class, 'createBahan'])->name('create');
+        Route::post('/store', [GudangController::class, 'storeBahan'])->name('store');
+        Route::get('/{id}/edit', [GudangController::class, 'editBahan'])->name('edit');
+        Route::put('/{id}', [GudangController::class, 'updateBahan'])->name('update');
     });
 
     Route::prefix('permintaan')->name('permintaan.')->group(function () {
