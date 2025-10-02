@@ -20,7 +20,7 @@ class AuthController extends Controller
     {
         $request->validate([
             'email' => 'required|email',
-            'password' => 'required|min:3'
+            'password' => 'required|min:6'
         ]);
 
         // Cari user dengan raw query
@@ -36,7 +36,7 @@ class AuthController extends Controller
 
         $user = $user[0];
 
-        // Verify password dengan MD5 (sesuai database)
+        // Verify password dengan MD5
         $inputPasswordMd5 = md5($request->password);
         if ($inputPasswordMd5 !== $user->password) {
             return redirect()->route('login')

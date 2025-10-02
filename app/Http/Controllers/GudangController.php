@@ -193,4 +193,45 @@ class GudangController extends Controller
 
         return redirect()->route('gudang.bahan-baku.index')->with('success', 'Bahan baku kadaluarsa berhasil dihapus');
     }
+
+    // Fitur Lihat Status Permintaan
+    public function statusPermintaan()
+    {
+        // Ambil semua permintaan dengan detail pemohon
+        $permintaan = DB::select("
+            SELECT p.*, u.name as pemohon_name, u.email as pemohon_email
+            FROM permintaan p
+            JOIN user u ON p.pemohon_id = u.id
+            ORDER BY p.created_at DESC
+        ");
+
+        return view('gudang.permintaan.status', compact('permintaan'));
+    }
+
+    public function detailPermintaan($id)
+    {
+        // Ambil data permintaan berdasarkan ID dengan detail pemohon
+        $permintaan = DB::selectOne("
+            SELECT p.*, u.name as pemohon_name, u.email as pemohon_email
+            FROM permintaan p
+            JOIN user u ON p.pemohon_id = u.id
+            WHERE p.id = ?
+        ", [$id]);
+
+        // Jika permintaan tidak ditemukan
+        if (!$permintaan) {
+            abort(404, 'Permintaan tidak ditemukan');
+        }
+
+        // Ambil detail bahan baku untuk permintaan ini
+        $details = DB::select("
+            SELECT pd.*, bb.nama as bahan_nama, bb.satuan, bb.jumlah as stok_tersedia
+            FROM permintaan_detail pd
+            JOIN bahan_baku bb ON pd.bahan_id = bb.id
+            WHERE pd.permintaan_id = ?
+            ORDER BY bb.nama ASC
+        ", [$id]);
+
+        return view('gudang.permintaan.detail', compact('permintaan', 'details'));
+    }
 }

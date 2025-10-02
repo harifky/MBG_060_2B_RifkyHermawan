@@ -318,6 +318,7 @@
             <ul>
                 <li><a href="{{ route('gudang.dashboard') }}" class="{{ request()->routeIs('gudang.dashboard') ? 'active' : '' }}">Dashboard</a></li>
                 <li><a href="{{ route('gudang.bahan-baku.index') }}" class="{{ request()->routeIs('gudang.bahan-baku.*') ? 'active' : '' }}">Bahan Baku</a></li>
+                <li><a href="{{ route('gudang.permintaan.status') }}" class="{{ request()->routeIs('gudang.permintaan.*') ? 'active' : '' }}">Status Permintaan</a></li>
             </ul>
         </div>
     </nav>
