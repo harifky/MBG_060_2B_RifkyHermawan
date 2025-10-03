@@ -39,6 +39,8 @@ Route::middleware(['auth', 'role:gudang'])->prefix('gudang')->name('gudang.')->g
     Route::prefix('permintaan')->name('permintaan.')->group(function () {
         Route::get('/status', [GudangController::class, 'statusPermintaan'])->name('status');
         Route::get('/detail/{id}', [GudangController::class, 'detailPermintaan'])->name('detail');
+        Route::post('/approve/{id}', [GudangController::class, 'approvePermintaan'])->name('approve');
+        Route::post('/reject/{id}', [GudangController::class, 'rejectPermintaan'])->name('reject');
     });
 });
 

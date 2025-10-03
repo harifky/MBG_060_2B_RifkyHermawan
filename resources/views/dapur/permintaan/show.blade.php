@@ -29,11 +29,17 @@
                 <h4 style="color: #2c3e50; margin-bottom: 15px;">Status & Waktu</h4>
                 <p><strong>Status:</strong> 
                     @if($permintaan->status == 'menunggu')
-                    <span class="badge badge-warning">Menunggu</span>
+                    <span class="badge bg-warning text-dark">
+                        <i class="bi bi-clock me-1"></i>Menunggu
+                    </span>
                     @elseif($permintaan->status == 'disetujui')
-                    <span class="badge badge-success">Disetujui</span>
+                    <span class="badge bg-success">
+                        <i class="bi bi-check-circle me-1"></i>Disetujui
+                    </span>
                     @elseif($permintaan->status == 'ditolak')
-                    <span class="badge badge-danger">Ditolak</span>
+                    <span class="badge bg-danger">
+                        <i class="bi bi-x-circle me-1"></i>Ditolak
+                    </span>
                     @endif
                 </p>
                 <p><strong>Tanggal Permintaan:</strong> {{ date('d/m/Y H:i', strtotime($permintaan->created_at)) }}</p>
@@ -71,9 +77,13 @@
                             </td>
                             <td style="border: 1px solid #ddd; text-align: center; padding: 12px;">
                                 @if($detail->stok_tersedia >= $detail->jumlah_diminta)
-                                    <span class="badge badge-success">Tersedia</span>
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle me-1"></i>Tersedia
+                                    </span>
                                 @else
-                                    <span class="badge badge-danger">Kurang</span>
+                                    <span class="badge bg-danger">
+                                        <i class="bi bi-exclamation-triangle me-1"></i>Kurang
+                                    </span>
                                 @endif
                             </td>
                         </tr>

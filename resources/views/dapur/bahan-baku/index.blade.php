@@ -41,16 +41,26 @@
                 <td>
                     @if($bahan->status == 'tersedia')
                         @if($bahan->jumlah <= 0)
-                            <span class="badge badge-danger">Habis</span>
+                            <span class="badge bg-danger">
+                                <i class="bi bi-x-circle me-1"></i>Habis
+                            </span>
                         @elseif($bahan->jumlah <= 10)
-                            <span class="badge badge-warning">Hampir Habis</span>
+                            <span class="badge bg-warning text-dark">
+                                <i class="bi bi-exclamation-triangle me-1"></i>Hampir Habis
+                            </span>
                         @else
-                            <span class="badge badge-success">Tersedia</span>
+                            <span class="badge bg-success">
+                                <i class="bi bi-check-circle me-1"></i>Tersedia
+                            </span>
                         @endif
                     @elseif($bahan->status == 'habis')
-                        <span class="badge badge-danger">Habis</span>
+                        <span class="badge bg-danger">
+                            <i class="bi bi-x-circle me-1"></i>Habis
+                        </span>
                     @elseif($bahan->status == 'kadaluarsa')
-                        <span class="badge badge-dark">Kadaluarsa</span>
+                        <span class="badge bg-dark">
+                            <i class="bi bi-calendar-x me-1"></i>Kadaluarsa
+                        </span>
                     @endif
                 </td>
                 <td>
@@ -93,10 +103,26 @@
 <div class="alert alert-info">
     <h4>Keterangan Status:</h4>
     <ul style="margin: 10px 0 5px 20px; padding: 0; line-height: 1.8;">
-        <li style="margin-bottom: 8px;"><span class="badge badge-success">Tersedia</span> | Stok lebih dari 10 unit</li>
-        <li style="margin-bottom: 8px;"><span class="badge badge-warning">Hampir Habis</span> | Stok 1-10 unit</li>
-        <li style="margin-bottom: 8px;"><span class="badge badge-danger">Habis</span> | Stok 0 atau sudah habis</li>
-        <li style="margin-bottom: 8px;"><span class="badge badge-dark">Kadaluarsa</span> | Sudah melewati tanggal kadaluarsa</li>
+        <li style="margin-bottom: 8px;">
+            <span class="badge bg-success">
+                <i class="bi bi-check-circle me-1"></i>Tersedia
+            </span> | Stok lebih dari 10 unit
+        </li>
+        <li style="margin-bottom: 8px;">
+            <span class="badge bg-warning text-dark">
+                <i class="bi bi-exclamation-triangle me-1"></i>Hampir Habis
+            </span> | Stok 1-10 unit
+        </li>
+        <li style="margin-bottom: 8px;">
+            <span class="badge bg-danger">
+                <i class="bi bi-x-circle me-1"></i>Habis
+            </span> | Stok 0 atau sudah habis
+        </li>
+        <li style="margin-bottom: 8px;">
+            <span class="badge bg-dark">
+                <i class="bi bi-calendar-x me-1"></i>Kadaluarsa
+            </span> | Sudah melewati tanggal kadaluarsa
+        </li>
     </ul>
     <p style="margin-top: 15px; color: #666;">
         <strong>Tips:</strong> Gunakan informasi ini untuk merencanakan permintaan bahan baku yang tepat. 

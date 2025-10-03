@@ -90,9 +90,11 @@ class DapurController extends Controller
 
     public function createPermintaan()
     {
-        // Ambil semua bahan baku (hilangkan filter status)
+        // Ambil hanya bahan baku yang tersedia (stok > 0 dan tidak kadaluarsa)
         $bahanBaku = DB::select("
             SELECT * FROM bahan_baku 
+            WHERE jumlah > 0 
+            AND status != 'kadaluarsa'
             ORDER BY nama ASC
         ");
         

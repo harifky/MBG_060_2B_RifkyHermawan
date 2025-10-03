@@ -45,11 +45,17 @@
                 <td>{{ date('d/m/Y', strtotime($p->created_at)) }}</td>
                 <td>
                     @if($p->status == 'menunggu')
-                    <span class="badge badge-warning">Menunggu</span>
+                    <span class="badge bg-warning text-dark">
+                        <i class="bi bi-clock me-1"></i>Menunggu
+                    </span>
                     @elseif($p->status == 'disetujui')
-                    <span class="badge badge-success">Disetujui</span>
+                    <span class="badge bg-success">
+                        <i class="bi bi-check-circle me-1"></i>Disetujui
+                    </span>
                     @elseif($p->status == 'ditolak')
-                    <span class="badge badge-danger">Ditolak</span>
+                    <span class="badge bg-danger">
+                        <i class="bi bi-x-circle me-1"></i>Ditolak
+                    </span>
                     @endif
                 </td>
                 <td>
@@ -70,9 +76,21 @@
 <div class="alert alert-info">
     <h4>Informasi Status Permintaan:</h4>
     <ul style="margin: 10px 0 5px 20px; padding: 0; line-height: 1.8;">
-        <li style="margin-bottom: 8px;"><span class="badge badge-warning">Menunggu</span> | Permintaan baru yang belum diproses</li>
-        <li style="margin-bottom: 8px;"><span class="badge badge-success">Disetujui</span> | Permintaan telah disetujui gudang</li>
-        <li style="margin-bottom: 8px;"><span class="badge badge-danger">Ditolak</span> | Permintaan tidak dapat dipenuhi</li>
+        <li style="margin-bottom: 8px;">
+            <span class="badge bg-warning text-dark">
+                <i class="bi bi-clock me-1"></i>Menunggu
+            </span> | Permintaan baru yang belum diproses
+        </li>
+        <li style="margin-bottom: 8px;">
+            <span class="badge bg-success">
+                <i class="bi bi-check-circle me-1"></i>Disetujui
+            </span> | Permintaan telah disetujui gudang
+        </li>
+        <li style="margin-bottom: 8px;">
+            <span class="badge bg-danger">
+                <i class="bi bi-x-circle me-1"></i>Ditolak
+            </span> | Permintaan tidak dapat dipenuhi
+        </li>
     </ul>
 </div>
 

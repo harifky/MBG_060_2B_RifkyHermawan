@@ -18,13 +18,21 @@
             <div><strong>Stok Saat Ini:</strong> {{ $bahanBaku->jumlah }} {{ $bahanBaku->satuan }}</div>
             <div><strong>Status:</strong>
                 @if($bahanBaku->status == 'tersedia')
-                <span class="badge badge-success">Tersedia</span>
+                <span class="badge bg-success">
+                    <i class="bi bi-check-circle me-1"></i>Tersedia
+                </span>
                 @elseif($bahanBaku->status == 'segera_kadaluarsa')
-                <span class="badge badge-warning">Segera Kadaluarsa</span>
+                <span class="badge bg-warning text-dark">
+                    <i class="bi bi-exclamation-triangle me-1"></i>Segera Kadaluarsa
+                </span>
                 @elseif($bahanBaku->status == 'kadaluarsa')
-                <span class="badge badge-danger">Kadaluarsa</span>
+                <span class="badge bg-danger">
+                    <i class="bi bi-x-circle me-1"></i>Kadaluarsa
+                </span>
                 @else
-                <span class="badge badge-secondary">Habis</span>
+                <span class="badge bg-secondary">
+                    <i class="bi bi-dash-circle me-1"></i>Habis
+                </span>
                 @endif
             </div>
             <div><strong>Tanggal Masuk:</strong> {{ date('d/m/Y', strtotime($bahanBaku->tanggal_masuk)) }}</div>

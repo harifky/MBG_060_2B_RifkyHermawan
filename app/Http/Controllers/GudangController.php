@@ -234,4 +234,87 @@ class GudangController extends Controller
 
         return view('gudang.permintaan.detail', compact('permintaan', 'details'));
     }
+
+    public function approvePermintaan($id)
+    {
+        // Validasi permintaan masih menunggu
+        $permintaan = DB::selectOne("SELECT * FROM permintaan WHERE id = ? AND status = 'menunggu'", [$id]);
+        
+        if (!$permintaan) {
+            return redirect()->back()->with('error', 'Permintaan tidak ditemukan atau sudah diproses');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // Cek ketersediaan stok semua bahan
+            $details = DB::select("
+                SELECT pd.*, bb.nama as bahan_nama, bb.jumlah as stok_tersedia
+                FROM permintaan_detail pd
+                JOIN bahan_baku bb ON pd.bahan_id = bb.id
+                WHERE pd.permintaan_id = ?
+            ", [$id]);
+
+            $bahanKurang = [];
+            foreach ($details as $detail) {
+                if ($detail->stok_tersedia < $detail->jumlah_diminta) {
+                    $bahanKurang[] = $detail->bahan_nama . ' (perlu: ' . $detail->jumlah_diminta . ', tersedia: ' . $detail->stok_tersedia . ')';
+                }
+            }
+
+            if (!empty($bahanKurang)) {
+                throw new \Exception('Stok tidak mencukupi untuk bahan: ' . implode(', ', $bahanKurang));
+            }
+
+            // Update status permintaan
+            DB::update("UPDATE permintaan SET status = 'disetujui' WHERE id = ?", [$id]);
+
+            // Kurangi stok bahan baku
+            foreach ($details as $detail) {
+                DB::update("
+                    UPDATE bahan_baku 
+                    SET jumlah = jumlah - ? 
+                    WHERE id = ?
+                ", [$detail->jumlah_diminta, $detail->bahan_id]);
+
+                // Update status bahan jika habis
+                $bahanBaku = DB::selectOne("SELECT * FROM bahan_baku WHERE id = ?", [$detail->bahan_id]);
+                if ($bahanBaku && $bahanBaku->jumlah <= 0) {
+                    DB::update("UPDATE bahan_baku SET status = 'habis' WHERE id = ?", [$detail->bahan_id]);
+                } elseif ($bahanBaku && $bahanBaku->jumlah <= 10) {
+                    DB::update("UPDATE bahan_baku SET status = 'hampir_habis' WHERE id = ?", [$detail->bahan_id]);
+                }
+            }
+
+            DB::commit();
+
+            return redirect()->route('gudang.permintaan.detail', $id)
+                           ->with('success', 'Permintaan berhasil disetujui dan stok telah dikurangi');
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('error', 'Gagal menyetujui permintaan: ' . $e->getMessage());
+        }
+    }
+
+    public function rejectPermintaan($id)
+    {
+        // Validasi permintaan masih menunggu
+        $permintaan = DB::selectOne("SELECT * FROM permintaan WHERE id = ? AND status = 'menunggu'", [$id]);
+        
+        if (!$permintaan) {
+            return redirect()->back()->with('error', 'Permintaan tidak ditemukan atau sudah diproses');
+        }
+
+        try {
+            // Update status permintaan
+            DB::update("UPDATE permintaan SET status = 'ditolak' WHERE id = ?", [$id]);
+
+            return redirect()->route('gudang.permintaan.detail', $id)
+                           ->with('success', 'Permintaan telah ditolak');
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menolak permintaan: ' . $e->getMessage());
+        }
+    }
 }

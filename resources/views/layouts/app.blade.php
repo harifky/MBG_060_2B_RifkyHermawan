@@ -5,72 +5,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title') - Pemantauan Bahan Baku MBG</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+            background-color: #f8f9fa;
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+        
+        .navbar-brand {
+            font-weight: bold;
         }
-
-        /* Header */
-        .header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 15px 0;
+        
+        .main-container {
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+        
+        /* Custom card styling */
+        .custom-card {
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             margin-bottom: 20px;
         }
-
-        .header .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header h1 {
-            font-size: 24px;
-        }
-
-        .header .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        /* Navigation */
-        .nav {
-            background-color: #34495e;
-            padding: 10px 0;
-            margin-bottom: 20px;
-        }
-
-        .nav ul {
-            list-style: none;
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav a {
+        
+        .card-header-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            text-decoration: none;
-            padding: 8px 15px;
-            border-radius: 5px;
+            border-bottom: none;
         }
-
-        .nav a:hover,
-        .nav a.active {
-            background-color: #3498db;
+        
+        /* Table improvements */
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            border-top: none;
         }
+        
+        /* Status badges custom colors */
+        .badge-tersedia { background-color: #28a745; }
+        .badge-hampir-habis { background-color: #ffc107; color: #000; }
+        .badge-habis { background-color: #dc3545; }
+        .badge-kadaluarsa { background-color: #6c757d; }
 
         /* Cards */
         .card {
@@ -81,282 +60,132 @@
             margin-bottom: 20px;
         }
 
-        .card h2 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
+        /* Custom enhancements for Bootstrap */
+        .navbar-brand {
+            font-weight: bold;
         }
-
-        /* Stats */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+        
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
         }
-
+        
         .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 5px;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
         }
-
-        .stat-card h3 {
-            font-size: 28px;
-            color: #3498db;
-            margin-bottom: 5px;
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
         }
-
-        .stat-card p {
-            color: #666;
+        
+        .table-responsive {
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
         }
-
-        /* Tables */
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
-
-        .table th,
-        .table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .table th {
-            background-color: #f8f9fa;
-            font-weight: bold;
-        }
-
-        .table tr:hover {
-            background-color: #f5f5f5;
-        }
-
-        /* Forms */
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        .form-control:focus {
-            border-color: #3498db;
-            outline: none;
-        }
-
-        /* Buttons */
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 14px;
-        }
-
-        .btn-primary {
-            background-color: #3498db;
-            color: white;
-        }
-
-        .btn-success {
-            background-color: #27ae60;
-            color: white;
-        }
-
-        .btn-danger {
-            background-color: #e74c3c;
-            color: white;
-        }
-
-        .btn-warning {
-            background-color: #f39c12;
-            color: white;
-        }
-
-        .btn-secondary {
-            background-color: #95a5a6;
-            color: white;
-        }
-
-        .btn:hover {
-            opacity: 0.9;
-        }
-
-        .btn-sm {
-            padding: 5px 10px;
-            font-size: 12px;
-        }
-
-        /* Action column styling */
-        .table td:last-child {
-            width: 140px;
-            min-width: 140px;
-        }
-
+        
         .action-buttons {
-            display: flex;
-            gap: 5px;
-            align-items: center;
-        }
-
-        .action-buttons .btn {
             white-space: nowrap;
-        }
-
-        /* Alerts */
-        .alert {
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert-danger {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .alert-info {
-            background-color: #cce7ff;
-            color: #004085;
-            border: 1px solid #b8daff;
-        }
-
-        .alert-success {
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-            color: #155724;
-            padding: 12px 16px;
-            margin-bottom: 20px;
-            border: 1px solid transparent;
-            border-radius: 8px;
-        }
-
-        .alert-error {
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
-            color: #721c24;
-            padding: 12px 16px;
-            margin-bottom: 20px;
-            border: 1px solid transparent;
-            border-radius: 8px;
-        }
-
-        /* Status badges */
-        .badge {
-            padding: 5px 10px;
-            border-radius: 15px;
-            color: white;
-            font-size: 12px;
-        }
-
-        .badge-success {
-            background-color: #27ae60;
-        }
-
-        .badge-danger {
-            background-color: #e74c3c;
-        }
-
-        .badge-warning {
-            background-color: #f39c12;
-        }
-
-        .badge-info {
-            background-color: #3498db;
-        }
-
-        .badge-secondary {
-            background-color: #95a5a6;
         }
     </style>
 </head>
 
 <body>
-    <header class="header">
+    <!-- Bootstrap Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <h1>Pemantauan Bahan Baku MBG</h1>
-            <div class="user-info">
-                <span>{{ auth()->user()->name }} ({{ ucfirst(auth()->user()->role) }})</span>
-                <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-building"></i> Pemantauan Bahan Baku MBG
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    @if(auth()->user()->role === 'gudang')
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('gudang.dashboard') ? 'active' : '' }}" href="{{ route('gudang.dashboard') }}">
+                                <i class="bi bi-speedometer2"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('gudang.bahan-baku.*') ? 'active' : '' }}" href="{{ route('gudang.bahan-baku.index') }}">
+                                <i class="bi bi-box-seam"></i> Bahan Baku
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('gudang.permintaan.*') ? 'active' : '' }}" href="{{ route('gudang.permintaan.status') }}">
+                                <i class="bi bi-clipboard-check"></i> Status Permintaan
+                            </a>
+                        </li>
+                    @elseif(auth()->user()->role === 'dapur')
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('dapur.dashboard') ? 'active' : '' }}" href="{{ route('dapur.dashboard') }}">
+                                <i class="bi bi-speedometer2"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('dapur.bahan-baku.*') ? 'active' : '' }}" href="{{ route('dapur.bahan-baku.index') }}">
+                                <i class="bi bi-eye"></i> Lihat Bahan Baku
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('dapur.permintaan.*') ? 'active' : '' }}" href="{{ route('dapur.permintaan.index') }}">
+                                <i class="bi bi-plus-circle"></i> Permintaan Bahan
+                            </a>
+                        </li>
+                    @endif
+                </ul>
+                
+                <div class="navbar-text me-3">
+                    <i class="bi bi-person-circle"></i> {{ auth()->user()->name }} 
+                    <span class="badge bg-light text-dark">{{ ucfirst(auth()->user()->role) }}</span>
+                </div>
+                
+                <form action="{{ route('logout') }}" method="POST" class="d-inline">
                     @csrf
-                    <button type="submit" class="btn btn-danger btn-sm">Logout</button>
+                    <button type="submit" class="btn btn-outline-light btn-sm">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </button>
                 </form>
             </div>
         </div>
-    </header>
-
-    @if(auth()->user()->role === 'gudang')
-    <nav class="nav">
-        <div class="container">
-            <ul>
-                <li><a href="{{ route('gudang.dashboard') }}" class="{{ request()->routeIs('gudang.dashboard') ? 'active' : '' }}">Dashboard</a></li>
-                <li><a href="{{ route('gudang.bahan-baku.index') }}" class="{{ request()->routeIs('gudang.bahan-baku.*') ? 'active' : '' }}">Bahan Baku</a></li>
-                <li><a href="{{ route('gudang.permintaan.status') }}" class="{{ request()->routeIs('gudang.permintaan.*') ? 'active' : '' }}">Status Permintaan</a></li>
-            </ul>
-        </div>
     </nav>
-    @elseif(auth()->user()->role === 'dapur')
-    <nav class="nav">
-        <div class="container">
-            <ul>
-                <li><a href="{{ route('dapur.dashboard') }}" class="{{ request()->routeIs('dapur.dashboard') ? 'active' : '' }}">Dashboard</a></li>
-                <li><a href="{{ route('dapur.bahan-baku.index') }}" class="{{ request()->routeIs('dapur.bahan-baku.*') ? 'active' : '' }}">Lihat Bahan Baku</a></li>
-                <li><a href="{{ route('dapur.permintaan.index') }}" class="{{ request()->routeIs('dapur.permintaan.*') ? 'active' : '' }}">Permintaan Bahan</a></li>
-            </ul>
-        </div>
-    </nav>
-    @endif
 
-    <main class="container">
+    <!-- Main Content -->
+    <main class="container-fluid py-4">
+        <!-- Success Message -->
         @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
         @endif
 
+        <!-- Error Messages -->
         @if(session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
         @endif
 
+        <!-- Validation Errors -->
         @if($errors->any())
-        <div class="alert alert-danger">
-            <ul style="margin: 0; padding-left: 20px;">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <strong>Terdapat kesalahan:</strong>
+            <ul class="mb-0 mt-2">
                 @foreach($errors->all() as $error)
                 <li>{{ $error }}</li>
                 @endforeach
             </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
         @endif
 
+        <!-- Page Content -->
         @yield('content')
     </main>
 </body>

@@ -3,139 +3,303 @@
 @section('title', 'Detail Permintaan - Gudang')
 
 @section('content')
-<style>
-    .text-success {
-        color: #27ae60 !important;
-    }
-    .text-danger {
-        color: #e74c3c !important;
-    }
-</style>
-<div class="card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2>Detail Permintaan Bahan Baku</h2>
-        <a href="{{ route('gudang.permintaan.status') }}" class="btn btn-secondary">← Kembali ke Daftar</a>
-    </div>
-</div>
-
-<div class="card">
-    <!-- Header Informasi Permintaan -->
-    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin-bottom: 20px;">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <div>
-                <h4 style="color: #2c3e50; margin-bottom: 15px;">Informasi Pemohon</h4>
-                <p><strong>Nama:</strong> {{ $permintaan->pemohon_name }}</p>
-                <p><strong>Email:</strong> {{ $permintaan->pemohon_email }}</p>
-            </div>
-            <div>
-                <h4 style="color: #2c3e50; margin-bottom: 15px;">Detail Permintaan</h4>
-                <p><strong>Menu Makan:</strong> {{ $permintaan->menu_makan }}</p>
-                <p><strong>Jumlah Porsi:</strong> {{ $permintaan->jumlah_porsi }} porsi</p>
-                <p><strong>Tanggal Masak:</strong> {{ date('d/m/Y', strtotime($permintaan->tgl_masak)) }}</p>
-                <p><strong>Tanggal Permintaan:</strong> {{ date('d/m/Y H:i', strtotime($permintaan->created_at)) }}</p>
-                <p><strong>Status:</strong> 
-                    @if($permintaan->status == 'menunggu')
-                    <span class="badge badge-warning">Menunggu</span>
-                    @elseif($permintaan->status == 'disetujui')
-                    <span class="badge badge-success">Disetujui</span>
-                    @elseif($permintaan->status == 'ditolak')
-                    <span class="badge badge-danger">Ditolak</span>
-                    @endif
-                </p>
+<div class="row">
+    <div class="col-12">
+        <!-- Page Header -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 class="mb-1">
+                        <i class="bi bi-clipboard-data me-2"></i>Detail Permintaan Bahan Baku
+                    </h4>
+                    <p class="mb-0 text-muted">Informasi lengkap permintaan dan ketersediaan stok</p>
+                </div>
+                <a href="{{ route('gudang.permintaan.status') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Kembali ke Daftar
+                </a>
             </div>
         </div>
-    </div>
 
-    <!-- Tabel Detail Bahan Baku -->
-    <h4 style="color: #2c3e50; margin-bottom: 15px;">Daftar Bahan Baku yang Diperlukan</h4>
-    
-    @if(isset($details) && count($details) > 0)
-        <div style="overflow-x: auto;">
-            <table class="table" style="border: 1px solid #ddd;">
-                <thead>
-                    <tr style="background-color: #e9ecef;">
-                        <th style="border: 1px solid #ddd; text-align: center; width: 50px;">No</th>
-                        <th style="border: 1px solid #ddd;">Nama Bahan Baku</th>
-                        <th style="border: 1px solid #ddd; text-align: center;">Jumlah Diminta</th>
-                        <th style="border: 1px solid #ddd; text-align: center;">Stok Tersedia</th>
-                        <th style="border: 1px solid #ddd; text-align: center;">Selisih</th>
-                        <th style="border: 1px solid #ddd; text-align: center;">Status Ketersediaan</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($details as $index => $detail)
-                        <tr>
-                            <td style="border: 1px solid #ddd; text-align: center;">{{ $index + 1 }}</td>
-                            <td style="border: 1px solid #ddd; padding: 12px;">
-                                <strong>{{ $detail->bahan_nama }}</strong>
-                            </td>
-                            <td style="border: 1px solid #ddd; text-align: center; padding: 12px;">
-                                {{ $detail->jumlah_diminta }} {{ $detail->satuan }}
-                            </td>
-                            <td style="border: 1px solid #ddd; text-align: center; padding: 12px;">
-                                {{ $detail->stok_tersedia }} {{ $detail->satuan }}
-                            </td>
-                            <td style="border: 1px solid #ddd; text-align: center; padding: 12px;">
-                                @php
-                                    $selisih = $detail->stok_tersedia - $detail->jumlah_diminta;
-                                @endphp
-                                <span class="{{ $selisih >= 0 ? 'text-success' : 'text-danger' }}" style="font-weight: bold;">
-                                    {{ $selisih >= 0 ? '+' : '' }}{{ $selisih }} {{ $detail->satuan }}
-                                </span>
-                            </td>
-                            <td style="border: 1px solid #ddd; text-align: center; padding: 12px;">
-                                @if($detail->stok_tersedia >= $detail->jumlah_diminta)
-                                    <span class="badge badge-success">Stok Cukup</span>
-                                @else
-                                    <span class="badge badge-danger">Stok Kurang</span>
-                                @endif
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+        <!-- Request Information -->
+        <div class="row mb-4">
+            <!-- Pemohon Info -->
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-person-circle me-2"></i>Informasi Pemohon
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-person me-3 text-primary"></i>
+                                    <div>
+                                        <small class="text-muted">Nama Pemohon</small>
+                                        <div class="fw-bold">{{ $permintaan->pemohon_name }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-envelope me-3 text-primary"></i>
+                                    <div>
+                                        <small class="text-muted">Email</small>
+                                        <div class="fw-bold">{{ $permintaan->pemohon_email }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Request Details -->
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-clipboard-check me-2"></i>Detail Permintaan
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-clipboard-data me-3 text-success"></i>
+                                    <div>
+                                        <small class="text-muted">Menu Makan</small>
+                                        <div class="fw-bold">{{ $permintaan->menu_makan }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-people me-3 text-info"></i>
+                                    <div>
+                                        <small class="text-muted">Jumlah Porsi</small>
+                                        <div class="fw-bold">{{ $permintaan->jumlah_porsi }} porsi</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-calendar3 me-3 text-warning"></i>
+                                    <div>
+                                        <small class="text-muted">Tanggal Masak</small>
+                                        <div class="fw-bold">{{ date('d/m/Y', strtotime($permintaan->tgl_masak)) }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-clock me-3 text-secondary"></i>
+                                    <div>
+                                        <small class="text-muted">Tanggal Permintaan</small>
+                                        <div class="fw-bold">{{ date('d/m/Y H:i', strtotime($permintaan->created_at)) }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-flag me-3"></i>
+                                    <div>
+                                        <small class="text-muted">Status</small>
+                                        <div>
+                                            @if($permintaan->status == 'menunggu')
+                                            <span class="badge bg-warning">
+                                                <i class="bi bi-clock me-1"></i>Menunggu
+                                            </span>
+                                            @elseif($permintaan->status == 'disetujui')
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check-circle me-1"></i>Disetujui
+                                            </span>
+                                            @elseif($permintaan->status == 'ditolak')
+                                            <span class="badge bg-danger">
+                                                <i class="bi bi-x-circle me-1"></i>Ditolak
+                                            </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        
-        <!-- Summary -->
-        <div style="margin-top: 20px; padding: 15px; background-color: #f1f3f4; border-radius: 5px; border-left: 4px solid #007bff;">
-            @php
-                $totalItems = count($details);
-                $availableItems = 0;
-                foreach($details as $detail) {
-                    if($detail->stok_tersedia >= $detail->jumlah_diminta) {
-                        $availableItems++;
+
+        <!-- Materials Required -->
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-list-check me-2"></i>Daftar Bahan Baku yang Diperlukan
+                </h5>
+            </div>
+            <div class="card-body">
+                @if(isset($details) && count($details) > 0)
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col" class="text-center">#</th>
+                                <th scope="col">Nama Bahan Baku</th>
+                                <th scope="col" class="text-center">Jumlah Diminta</th>
+                                <th scope="col" class="text-center">Stok Tersedia</th>
+                                <th scope="col" class="text-center">Selisih</th>
+                                <th scope="col" class="text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($details as $index => $detail)
+                                <tr>
+                                    <td class="text-center">{{ $index + 1 }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-box-seam me-2 text-primary"></i>
+                                            <strong>{{ $detail->bahan_nama }}</strong>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-primary">
+                                            {{ $detail->jumlah_diminta }} {{ $detail->satuan }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-info">
+                                            {{ $detail->stok_tersedia }} {{ $detail->satuan }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        @php
+                                            $selisih = $detail->stok_tersedia - $detail->jumlah_diminta;
+                                        @endphp
+                                        <span class="badge {{ $selisih >= 0 ? 'bg-success' : 'bg-danger' }}">
+                                            {{ $selisih >= 0 ? '+' : '' }}{{ $selisih }} {{ $detail->satuan }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        @if($detail->stok_tersedia >= $detail->jumlah_diminta)
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check-circle me-1"></i>Stok Cukup
+                                            </span>
+                                        @else
+                                            <span class="badge bg-danger">
+                                                <i class="bi bi-x-circle me-1"></i>Stok Kurang
+                                            </span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Summary Card -->
+                @php
+                    $totalItems = count($details);
+                    $availableItems = 0;
+                    foreach($details as $detail) {
+                        if($detail->stok_tersedia >= $detail->jumlah_diminta) {
+                            $availableItems++;
+                        }
                     }
-                }
-            @endphp
-            <h5 style="margin-bottom: 10px; color: #2c3e50;">Ringkasan Ketersediaan</h5>
-            <p style="margin-bottom: 8px;">
-                <strong>Total Bahan:</strong> {{ $totalItems }} jenis
-            </p>
-            <p style="margin-bottom: 8px;">
-                <strong>Bahan Tersedia:</strong> {{ $availableItems }} jenis
-            </p>
-            <p style="margin-bottom: 0;">
-                <strong>Status:</strong> 
-                @if($availableItems == $totalItems)
-                    <span style="color: #27ae60; font-weight: bold;">✓ Semua bahan dapat dipenuhi</span>
-                @else
-                    <span style="color: #e74c3c; font-weight: bold;">⚠ Ada {{ $totalItems - $availableItems }} bahan yang tidak mencukupi</span>
-                @endif
-            </p>
-        </div>
-    @else
-        <div style="text-align: center; padding: 40px 20px; background-color: #f8f9fa; border-radius: 5px;">
-            <h4 style="color: #666; margin-bottom: 10px;">Tidak Ada Detail Bahan</h4>
-            <p style="color: #888;">Permintaan ini belum memiliki detail bahan baku yang diperlukan.</p>
-        </div>
-    @endif
-</div>
+                @endphp
+                
+                <div class="alert {{ $availableItems == $totalItems ? 'alert-success' : 'alert-warning' }} mt-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-clipboard-data display-6 me-3"></i>
+                        <div>
+                            <h5 class="mb-1">Ringkasan Ketersediaan Bahan</h5>
+                            <p class="mb-0">Analisis stok untuk semua bahan yang diminta</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-list-ul me-2"></i>
+                                <strong>Total Bahan: {{ $totalItems }} jenis</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle me-2 text-success"></i>
+                                <strong>Bahan Tersedia: {{ $availableItems }} jenis</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            @if($availableItems == $totalItems)
+                                <div class="d-flex align-items-center text-success">
+                                    <i class="bi bi-check-circle-fill me-2"></i>
+                                    <strong>✓ Semua bahan dapat dipenuhi</strong>
+                                </div>
+                            @else
+                                <div class="d-flex align-items-center text-warning">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                    <strong>⚠ {{ $totalItems - $availableItems }} bahan tidak mencukupi</strong>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
 
-<!-- Action Buttons (jika diperlukan untuk challenge feature nanti) -->
-<div class="card" style="text-align: center;">
-    <div style="display: flex; gap: 10px; justify-content: center;">
-        <a href="{{ route('gudang.permintaan.status') }}" class="btn btn-secondary">← Kembali ke Daftar</a>
-        <!-- Tombol approve/reject bisa ditambahkan di sini untuk challenge feature -->
+                @else
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <i class="bi bi-inbox display-1 text-muted"></i>
+                    </div>
+                    <h4 class="text-muted mb-3">Tidak Ada Detail Bahan</h4>
+                    <p class="text-muted">Permintaan ini belum memiliki detail bahan baku yang diperlukan.</p>
+                </div>
+                @endif
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="card mt-4 shadow-sm">
+            <div class="card-body text-center">
+                <div class="d-flex gap-3 justify-content-center align-items-center flex-wrap">
+                    <a href="{{ route('gudang.permintaan.status') }}" class="btn btn-outline-secondary btn-lg">
+                        <i class="bi bi-arrow-left me-2"></i>Kembali ke Daftar
+                    </a>
+                    
+                    @if($permintaan->status == 'menunggu')
+                        <form method="POST" action="{{ route('gudang.permintaan.approve', $permintaan->id) }}" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-success btn-lg" 
+                                    onclick="return confirm('Yakin ingin menyetujui permintaan ini?\n\nStok bahan baku akan dikurangi otomatis sesuai jumlah yang diminta.')">
+                                <i class="bi bi-check-circle me-2"></i>Setujui Permintaan
+                            </button>
+                        </form>
+                        
+                        <form method="POST" action="{{ route('gudang.permintaan.reject', $permintaan->id) }}" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-danger btn-lg" 
+                                    onclick="return confirm('Yakin ingin menolak permintaan ini?\n\nAksi ini tidak dapat dibatalkan.')">
+                                <i class="bi bi-x-circle me-2"></i>Tolak Permintaan
+                            </button>
+                        </form>
+                    @else
+                        <div class="alert {{ $permintaan->status == 'disetujui' ? 'alert-success' : 'alert-danger' }} mb-0">
+                            <div class="d-flex align-items-center justify-content-center">
+                                @if($permintaan->status == 'disetujui')
+                                    <i class="bi bi-check-circle-fill me-2"></i>
+                                    <strong>Permintaan Sudah Disetujui</strong>
+                                @else
+                                    <i class="bi bi-x-circle-fill me-2"></i>
+                                    <strong>Permintaan Sudah Ditolak</strong>
+                                @endif
+                            </div>
+                            <div class="mt-1 text-center">
+                                <small>Aksi telah selesai pada {{ date('d/m/Y H:i', strtotime($permintaan->updated_at)) }}</small>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 @endsection
