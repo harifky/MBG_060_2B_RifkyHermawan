@@ -54,6 +54,12 @@ Route::middleware(['auth', 'role:dapur'])->prefix('dapur')->name('dapur.')->grou
 
     Route::prefix('permintaan')->name('permintaan.')->group(function () {
         Route::get('/', [DapurController::class, 'permintaan'])->name('index');
+        Route::get('/create', [DapurController::class, 'createPermintaan'])->name('create');
+        Route::post('/store', [DapurController::class, 'storePermintaan'])->name('store');
+        Route::get('/{id}', [DapurController::class, 'showPermintaan'])->name('show');
+        Route::get('/{id}/edit', [DapurController::class, 'editPermintaan'])->name('edit');
+        Route::put('/{id}', [DapurController::class, 'updatePermintaan'])->name('update');
+        Route::delete('/{id}', [DapurController::class, 'destroyPermintaan'])->name('destroy');
     });
 });
 

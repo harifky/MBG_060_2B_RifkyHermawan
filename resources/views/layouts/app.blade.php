@@ -326,7 +326,9 @@
     <nav class="nav">
         <div class="container">
             <ul>
-                <p>Menu Dapur</p>
+                <li><a href="{{ route('dapur.dashboard') }}" class="{{ request()->routeIs('dapur.dashboard') ? 'active' : '' }}">Dashboard</a></li>
+                <li><a href="{{ route('dapur.bahan-baku.index') }}" class="{{ request()->routeIs('dapur.bahan-baku.*') ? 'active' : '' }}">Lihat Bahan Baku</a></li>
+                <li><a href="{{ route('dapur.permintaan.index') }}" class="{{ request()->routeIs('dapur.permintaan.*') ? 'active' : '' }}">Permintaan Bahan</a></li>
             </ul>
         </div>
     </nav>
